@@ -2,26 +2,36 @@ const Web3 = require('web3');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const web3 = new Web3("https://rpc-mumbai.maticvigil.com");
+
 const serverless = require('serverless-http');
 // Contract ABI and address
 const abi = require("../abi.json");
-console.log(abi);
+//console.log(abi);
+
+var chainesIdDic = {
+    "1":"https://eth.llamarpc.com",
+    "56":"https://bsc-dataseed.binance.org",
+    "137":"https://polygon.llamarpc.com",
+    "42161":"https://1rpc.io/arb",
+    "10":"https://mainnet.optimism.io",
+    "97":"https://data-seed-prebsc-2-s3.binance.org:8545",
+    "80001":"https://rpc-mumbai.maticvigil.com",
+    "513100":"https://rpc.etherfair.org",
+    "6":"https://www.ethercluster.com/kotti"
+};
 //netlify dev
 // Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
 const address = "0x96d1FAcf242F5dD5d7Bd8de6EB0Eaf3D4B5Cf1A9";
 const router=express.Router();
-// Create the contract instance
-const contract = new web3.eth.Contract(abi, address);
-//app.use(bodyParser);
-// Define the API route
-router.get('/api/:functionName/:parameters', (req, res) => {
+router.get('/api/:chaineId/:address/:functionName/:parameters', (req, res) => {
+    
+    console.log(chainesIdDic[req.params.chaineId])
+    const web3 = new Web3(chainesIdDic[req.params.chaineId]);
+    const contract = new web3.eth.Contract(abi, req.params.address);
     console.log("function name = "+req.params.functionName);
     // Call the contract function
     contract.methods[req.params.functionName](req.params.parameters).call()
         .then(result => {
-            //res.set('Content-Type', 'text/plain').send(result);
-            //res.send(JSON.stringify(result.replace('\u0000','')));
             res.send(result);
         })
         .catch(error => {
@@ -30,13 +40,8 @@ router.get('/api/:functionName/:parameters', (req, res) => {
 });
 router.get('/', (req, res) => {
     console.log("hello");
-    res.send("hello Netlify");
+    res.send("   https://solidityrestapi.netlify.app/api/chaineid/contractaddress/function/var1/var2/........varN <br>  example https://solidityrestapi.netlify.app/api/80001/0x96d1FAcf242F5dD5d7Bd8de6EB0Eaf3D4B5Cf1A9/f_tokenURI/earth_0012 \n <br> " );
    
 });
-//app.use("/.netlify/functions/api",router);
 app.use("/",router);
 module.exports.handler = serverless(app);
-// Start the server
-/*app.listen(3000, () => {
-    console.log('API listening on port 3000');
-});*/
