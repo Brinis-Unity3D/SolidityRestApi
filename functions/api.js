@@ -40,7 +40,9 @@ router.get('/api/:chaineId/:address/:functionName/:parameters', (req, res) => {
 });
 router.get('/', (req, res) => {
     console.log("hello");
-    res.send("   https://solidityrestapi.netlify.app/api/chaineid/contractaddress/function/var1/var2/........varN <br>  example https://solidityrestapi.netlify.app/api/80001/0x96d1FAcf242F5dD5d7Bd8de6EB0Eaf3D4B5Cf1A9/f_tokenURI/earth_0012 \n <br> " );
+    //res.send(require("./landing.html"));
+    res.sendFile('./landing.html');
+        //" Are you tired of the hassle of interacting with contracts on the blockchain? Our new API makes it easy to retrieve data and invoke functions on any contract, on any blockchain, with just a few simple API calls. No more fiddling with private keys, ABIs, or complex web3 code - our API handles all of that for you, so you can focus on building great decentralized applications. Give it a try today and see how much easier your development workflow can be! <br>  https://solidityrestapi.netlify.app/api/chaineid/contractaddress/function/var1/var2/........varN <br>  example https://solidityrestapi.netlify.app/api/80001/0x96d1FAcf242F5dD5d7Bd8de6EB0Eaf3D4B5Cf1A9/f_tokenURI/earth_0012 \n <br> " );
    
 });
 app.use("/",router);
