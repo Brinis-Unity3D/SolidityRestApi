@@ -1,6 +1,10 @@
 [build]
     functions="functions"
+    publish = "/public" 
     [[redirects]]
-    to="/.netlify/functions/api/:splat"
-    from="/*"
-    status=200
+        to="/.netlify/functions/api/:splat"
+        from="/api/*"
+        status=200
+    
+
+   
