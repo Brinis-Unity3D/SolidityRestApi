@@ -94,19 +94,6 @@
 		"type": "event"
 	},
 	{
-		"inputs": [],
-		"name": "OwnersAll",
-		"outputs": [
-			{
-				"internalType": "address[]",
-				"name": "",
-				"type": "address[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -275,7 +262,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "f_GetTokensPerOwnersMap",
+		"name": "f_GetTokensPerOwnersMapInRange",
 		"outputs": [
 			{
 				"internalType": "address[]",
@@ -317,7 +304,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "f_GetallMintedTokenIds",
+		"name": "f_GetallMintedTokenIdsInRange",
 		"outputs": [
 			{
 				"internalType": "string[]",
@@ -457,6 +444,19 @@
 				"internalType": "address",
 				"name": "",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "f_ownersAll",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
 			}
 		],
 		"stateMutability": "view",
