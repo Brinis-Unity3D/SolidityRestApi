@@ -5,6 +5,10 @@
         to="/.netlify/functions/api/:splat"
         from="/api/*"
         status=200
+    [[redirects]]
+        to="/.netlify/functions/api/filter/:splat"
+        from="/filter/*"
+        status=200
     
 
    

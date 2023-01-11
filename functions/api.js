@@ -7,6 +7,7 @@ const serverless = require('serverless-http');
 // Contract ABI and address
 const abi = require("../abi.json");
 const { json } = require('body-parser');
+const Gears = require("./Gears");
 //console.log(abi);
 
 var chainesIdDic = {
@@ -15,7 +16,8 @@ var chainesIdDic = {
     "137":"https://polygon.llamarpc.com",
     "42161":"https://1rpc.io/arb",
     "10":"https://mainnet.optimism.io",
-    "97":"https://data-seed-prebsc-2-s3.binance.org:8545",
+    //"97":"https://data-seed-prebsc-2-s3.binance.org:8545",
+    "97":"https://bsc.nodes.fastnode.io/testnet/fn-dedic-49e2-80ef-b690b812b1e4/",
     "80001":"https://rpc-mumbai.maticvigil.com",
     "513100":"https://rpc.etherfair.org",
     "6":"https://www.ethercluster.com/kotti"
@@ -27,19 +29,24 @@ const address = "0x361F2e4ee08E56C736d5cF0e66cC9515253fADBA";
 const router=express.Router();
 router.get('/api/:chaineId/:address/:functionName*', (req, res) => {
 
-
+    console.time("f");
     console.log(req.params["0"]);
     let params=req.params["0"].split('/');
-    
     params = params.filter(entry => entry.trim() != '');
-    //console.log(params) ;
     const web3 = new Web3(chainesIdDic[req.params.chaineId]);
     const contract = new web3.eth.Contract(abi, req.params.address);
     let signature;
-    signature = FillFunctionFromParams(params, signature, contract, req);
+    signature = Gears.FillFunctionFromParams(params, signature, contract, req);
+    console.timeEnd("f");
+    console.time("e");
+
        signature.call()
         .then(result => {
-            res.send(ProcessResult(result,(req.params.functionName+"").toLowerCase().includes("map")));
+            console.timeEnd("e");
+            console.time("a");
+            res.send(Gears.ProcessResult(result,(req.params.functionName+"").toLowerCase().includes("map")));
+    console.timeEnd("a");
+
         })
         .catch(error => {
             res.status(500).send(error);
@@ -47,59 +54,36 @@ router.get('/api/:chaineId/:address/:functionName*', (req, res) => {
     
 });
 
+
 router.get('/', (req, res) => {
     res.sendFile('/public/index.html',{ root : __dirname});
 });
 app.use("/",router);
 module.exports.handler = serverless(app);
 
-function FillFunctionFromParams(params, signature, contract, req) {
-    switch (params.length) {
-        default: signature = contract.methods[req.params.functionName]();
-        case 0:
-            signature = contract.methods[req.params.functionName]();
-            break;
-        case 1:
-            signature = contract.methods[req.params.functionName](params[0]);
-            break;
-        case 2:
-            signature = contract.methods[req.params.functionName](params[0], params[1]);
-            break;
-        case 3:
-            signature = contract.methods[req.params.functionName](params[0], params[1], params[2]);
-            break;
-        case 4:
-            signature = contract.methods[req.params.functionName](params[0], params[1], params[2], params[3]);
-            break;
-        case 5:
-            signature = contract.methods[req.params.functionName](params[0], params[1], params[2], params[3], params[4]);
-            break;
-        case 6:
-            signature = contract.methods[req.params.functionName](params[0], params[1], params[2], params[3], params[4], params[5]);
-            break;
-        case 7:
-            signature = contract.methods[req.params.functionName](params[0], params[1], params[2], params[3], params[4], params[5], params[6]);
-            break;
-    }
-    return signature;
-}
 
-function ProcessResult(result,isDictionary=false) {
+
+router.get('/filter/:type/:chaineId/:address/:functionName*', (req, res) => {
+
    
-    console.log(result);
-    let s = JSON.stringify(result);
-    s = s.replaceAll('\\u0000', '');
-    s = s.replaceAll('\\x00', '');
-    r=JSON.parse(s);
-    if(isDictionary)
-    {
-        console.log("its a map should return dictionary");
-        var dic = {};
-        r["0"].forEach((key, i) => dic[key] = r["1"][i]);
-        console.log(dic);
-        return dic;
-    }
+    let params=req.params["0"].split('/');
+    params = params.filter(entry => entry.trim() != '');
+    const web3 = new Web3(chainesIdDic[req.params.chaineId]);
+    const contract = new web3.eth.Contract(abi, req.params.address);
+    let signature;
+    signature = Gears.FillFunctionFromParams(params, signature, contract, req);
+   
 
-    return r;
-}
+       signature.call()
+        .then(result => {
+            res.send(
+                Gears.ProcessFilterableResult(result,(req.params.functionName+"").toLowerCase().includes("map"),req.params.type),
+                );
+        })
+        .catch(error => {
+            res.status(500).send(error);
+        });
+    
+});
+
 
