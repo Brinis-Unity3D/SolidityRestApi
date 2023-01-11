@@ -6,6 +6,7 @@ const path = require('path');
 const serverless = require('serverless-http');
 // Contract ABI and address
 const abi = require("../abi.json");
+const { json } = require('body-parser');
 //console.log(abi);
 
 var chainesIdDic = {
@@ -22,67 +23,30 @@ var chainesIdDic = {
 //netlify dev
 // Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
 const address = "0x361F2e4ee08E56C736d5cF0e66cC9515253fADBA";
+//0x96d1FAcf242F5dD5d7Bd8de6EB0Eaf3D4B5Cf1A9
 const router=express.Router();
-router.get('/api/:chaineId/:address/:functionName/*', (req, res) => {
+router.get('/api/:chaineId/:address/:functionName*', (req, res) => {
 
-   console.log(req.params["0"]);
+
+    console.log(req.params["0"]);
     let params=req.params["0"].split('/');
+    
     params = params.filter(entry => entry.trim() != '');
-    console.log(params) ;
+    //console.log(params) ;
     const web3 = new Web3(chainesIdDic[req.params.chaineId]);
     const contract = new web3.eth.Contract(abi, req.params.address);
     let signature;
-   
     signature = FillFunctionFromParams(params, signature, contract, req);
        signature.call()
         .then(result => {
-            res.send(ProcessResult(result));
+            res.send(ProcessResult(result,(req.params.functionName+"").toLowerCase().includes("map")));
         })
         .catch(error => {
             res.status(500).send(error);
         });
     
 });
-/*router.get('/api/:chaineId/:address/:functionName/:p1/:p2', (req, res) => {
 
-    console.log(req.params.functionName);
-    
-     const web3 = new Web3(chainesIdDic[req.params.chaineId]);
-     const contract = new web3.eth.Contract(abi, req.params.address);
-     contract.methods[req.params.functionName](req.params.p1,req.params.p2).call()
-         .then(result => {
-             res.send(ProcessResult(result));
-         })
-         .catch(error => {
-             res.status(500).send(error);
-         });
- });
- router.get('/api/:chaineId/:address/:functionName', (req, res) => {
-    const web3 = new Web3(chainesIdDic[req.params.chaineId]);
-    const contract = new web3.eth.Contract(abi,req.params.address);
-    // Call the contract function
-    contract.methods[req.params.functionName]().call()
-        .then(result => {
-            let s = ProcessResult(result);
-            res.send(s);
-        })
-        .catch(error => {
-            res.status(500).send(error);
-        });
-});*/
-/*router.get('/api/:chaineId/:address/f_GetTokensPerOwnersMap/:instanceId', (req, res) => {
-    const web3 = new Web3(chainesIdDic[req.params.chaineId]);
-    const contract = new web3.eth.Contract(abi,req.params.address);
-    // Call the contract function
-    contract.methods[req.params.functionName]().call()
-        .then(result => {
-            let s = ProcessResult(result);
-            res.send(s);
-        })
-        .catch(error => {
-            res.status(500).send(error);
-        });
-});*/
 router.get('/', (req, res) => {
     res.sendFile('/public/index.html',{ root : __dirname});
 });
@@ -120,11 +84,22 @@ function FillFunctionFromParams(params, signature, contract, req) {
     return signature;
 }
 
-function ProcessResult(result) {
+function ProcessResult(result,isDictionary=false) {
    
+    console.log(result);
     let s = JSON.stringify(result);
     s = s.replaceAll('\\u0000', '');
     s = s.replaceAll('\\x00', '');
-    return s;
+    r=JSON.parse(s);
+    if(isDictionary)
+    {
+        console.log("its a map should return dictionary");
+        var dic = {};
+        r["0"].forEach((key, i) => dic[key] = r["1"][i]);
+        console.log(dic);
+        return dic;
+    }
+
+    return r;
 }
 
