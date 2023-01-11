@@ -32,8 +32,9 @@ function ProcessFilterableResult(result, isDictionary = false,type) {
     if (isDictionary) {
         console.log("its a map should return dictionary");
         var dic = {};
-        r["0"].forEach((key, i) => dic[key] = filterArray(r["1"][i],type));
-      
+
+        r["0"].forEach((key, i) => dic[key] = (r["1"][i] instanceof Array) ? filterArray(r["1"][i],type):filterString(r["1"][i],type));
+        
         console.log(dic);
         return dic;
     }
@@ -46,13 +47,33 @@ function ProcessFilterableResult(result, isDictionary = false,type) {
     
     return r;
 }
+function filterString(e,type)
+{
+    if(shouldfilterString) return e+"";
+    return null;
+}
+function shouldfilterString(e,type)
+{
+    return (e+"").toLowerCase().startsWith(type.toLowerCase());
+}
 function filterArray(a,type)
 {
-    return a.filter(function(e){ return (e+"").toLowerCase().startsWith(type.toLowerCase());});
+    return a.filter(function(e){ return shouldfilterString(e,type)});
 }
 exports.ProcessFilterableResult = ProcessFilterableResult;
 
 function FillFunctionFromParams(params, signature, contract, req) {
+
+    for(i=0;i<params.length;i++)
+    {
+        element=params[i];
+        if(element.includes(","))
+        {
+            console.log("has comma")
+            params[i]=element.split(",");
+        }
+    }
+   
     switch (params.length) {
         default: signature = contract.methods[req.params.functionName]();
         case 0:
