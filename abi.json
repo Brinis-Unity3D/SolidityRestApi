@@ -1,10 +1,5 @@
 [
 	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -96,6 +91,31 @@
 			}
 		],
 		"name": "Transfer",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "string",
+				"name": "_tokenId",
+				"type": "string"
+			}
+		],
+		"name": "e_Transfer",
 		"type": "event"
 	},
 	{
@@ -207,6 +227,19 @@
 	{
 		"inputs": [],
 		"name": "cost",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "f_GetOwnersCount",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -434,6 +467,35 @@
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "from",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "to",
+				"type": "uint256"
+			}
+		],
+		"name": "f_getOwnersPerTokenInRange",
+		"outputs": [
+			{
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
+			},
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "string",
 				"name": "source",
 				"type": "string"
@@ -552,6 +614,11 @@
 		],
 		"name": "f_ownersOfBatch",
 		"outputs": [
+			{
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
+			},
 			{
 				"internalType": "address[]",
 				"name": "",

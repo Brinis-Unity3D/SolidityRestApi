@@ -6,7 +6,8 @@ function ProcessResult(result, isDictionary = false) {
     s = s.replaceAll('\\u0000', '');
     s = s.replaceAll('\\x00', '');
     r = JSON.parse(s);
-    
+    if( result["0"]instanceof Array &  result["1"]instanceof Array )
+    isDictionary=true;
     if (isDictionary) {
         console.log("its a map should return dictionary");
         var dic = {};
@@ -26,9 +27,9 @@ function ProcessFilterableResult(result, isDictionary = false,type) {
     let s = JSON.stringify(result);
     s = s.replaceAll('\\u0000', '');
     s = s.replaceAll('\\x00', '');
-    
     r = JSON.parse(s);
-    
+    /*if( result["0"]instanceof Array &  result["1"]instanceof Array )
+    isDictionary=true;*/
     if (isDictionary) {
         console.log("its a map should return dictionary");
         var dic = {};

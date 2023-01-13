@@ -18,7 +18,8 @@ var chainesIdDic = {
     "10":"https://mainnet.optimism.io",
     //"97":"https://data-seed-prebsc-2-s3.binance.org:8545",
     "97":"https://bsc.nodes.fastnode.io/testnet/fn-dedic-49e2-80ef-b690b812b1e4/",
-    "80001":"https://rpc-mumbai.maticvigil.com",
+    //"80001":"https://rpc-mumbai.maticvigil.com",
+    "80001":"https://polygon-testnet.public.blastapi.io",
     "513100":"https://rpc.etherfair.org",
     "6":"https://www.ethercluster.com/kotti"
 };
